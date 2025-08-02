@@ -64,3 +64,10 @@ export const addItemToCart = (cart: CartItem[], product: Product) => {
 export const removeItemFromCart = (cart: CartItem[], productId: string) => {
   return cart.filter((item) => item.product.id !== productId);
 };
+
+export const getRemainingStock = (product: Product, cart: CartItem[]) => {
+  const cartItem = cart.find((item) => item.product.id === product.id);
+  const remainingStock = product.stock - (cartItem?.quantity || 0);
+
+  return remainingStock;
+};
