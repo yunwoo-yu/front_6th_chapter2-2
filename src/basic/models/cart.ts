@@ -1,5 +1,5 @@
 import { applyCoupon } from "../../refactoring(hint)/models/coupon";
-import { CartItem, Coupon } from "../../types";
+import { CartItem, Coupon, Product } from "../../types";
 import { getMaxApplicableDiscount } from "./discount";
 
 interface CartTotal {
@@ -49,4 +49,18 @@ export const updateCartItemQuantity = (
   return cart.map((item) =>
     item.product.id === productId ? { ...item, quantity } : item
   );
+};
+
+export const addItemToCart = (cart: CartItem[], product: Product) => {
+  const existingItem = cart.find((item) => item.product.id === product.id);
+
+  if (existingItem) {
+    return updateCartItemQuantity(cart, product.id, existingItem.quantity + 1);
+  }
+
+  return [...cart, { product, quantity: 1 }];
+};
+
+export const removeItemFromCart = (cart: CartItem[], productId: string) => {
+  return cart.filter((item) => item.product.id !== productId);
 };
