@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { Coupon, Product } from "../types";
+import { Product } from "../types";
 import { useCart } from "./hooks/useCart";
+import { useCoupon } from "./hooks/useCoupon";
 import { useNotification } from "./hooks/useNotification";
 import { calculateItemTotal, getRemainingStock } from "./models/cart";
-import { useCoupon } from "./hooks/useCoupon";
+import { useProducts } from "./hooks/useProducts";
 
 export interface ProductWithUI extends Product {
   description?: string;
@@ -49,17 +50,8 @@ const App = () => {
   const { notifications, addNotification, removeNotification } =
     useNotification();
 
-  const [products, setProducts] = useState<ProductWithUI[]>(() => {
-    const saved = localStorage.getItem("products");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return initialProducts;
-      }
-    }
-    return initialProducts;
-  });
+  const { products, addProduct, updateProduct, deleteProduct } =
+    useProducts(addNotification);
 
   const {
     cart,
@@ -86,6 +78,7 @@ const App = () => {
   const [showProductForm, setShowProductForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [totalItemCount, setTotalItemCount] = useState(0);
 
   // Admin
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
@@ -119,20 +112,10 @@ const App = () => {
     return `₩${price.toLocaleString()}`;
   };
 
-  const [totalItemCount, setTotalItemCount] = useState(0);
-
   useEffect(() => {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
     setTotalItemCount(count);
   }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
-
-  useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons));
-  }, [coupons]);
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -158,38 +141,6 @@ const App = () => {
 
     clearCart();
   }, [addNotification, clearCart]);
-
-  const addProduct = useCallback(
-    (newProduct: Omit<ProductWithUI, "id">) => {
-      const product: ProductWithUI = {
-        ...newProduct,
-        id: `p${Date.now()}`,
-      };
-      setProducts((prev) => [...prev, product]);
-      addNotification("상품이 추가되었습니다.", "success");
-    },
-    [addNotification]
-  );
-
-  const updateProduct = useCallback(
-    (productId: string, updates: Partial<ProductWithUI>) => {
-      setProducts((prev) =>
-        prev.map((product) =>
-          product.id === productId ? { ...product, ...updates } : product
-        )
-      );
-      addNotification("상품이 수정되었습니다.", "success");
-    },
-    [addNotification]
-  );
-
-  const deleteProduct = useCallback(
-    (productId: string) => {
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
-      addNotification("상품이 삭제되었습니다.", "success");
-    },
-    [addNotification]
-  );
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();

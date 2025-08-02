@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Coupon } from "../../types";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 
@@ -65,6 +65,10 @@ export function useCoupon({
     },
     [selectedCoupon, addNotification]
   );
+
+  useEffect(() => {
+    localStorage.setItem("coupons", JSON.stringify(coupons));
+  }, [coupons]);
 
   return {
     coupons,
