@@ -35,7 +35,6 @@ const AdminPage = ({
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [showProductForm, setShowProductForm] = useState(false);
   const [showCouponForm, setShowCouponForm] = useState(false);
-
   const [productForm, setProductForm] = useState({
     name: "",
     price: 0,
