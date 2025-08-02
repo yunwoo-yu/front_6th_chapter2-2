@@ -5,14 +5,17 @@ import { useCart } from "./hooks/useCart";
 import { useCoupon } from "./hooks/useCoupon";
 import { useNotification } from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
-import { calculateItemTotal, getRemainingStock } from "./models/cart";
+import { calculateItemTotal } from "./models/cart";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
+import { formatPrice, isProductSoldOut } from "./utils/formatters";
 
 export interface ProductWithUI extends Product {
   description?: string;
   isRecommended?: boolean;
 }
+
+const SOLD_OUT_TEXT = "SOLD OUT";
 
 const App = () => {
   const { notifications, addNotification, removeNotification } =
@@ -40,26 +43,19 @@ const App = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
   const [totalItemCount, setTotalItemCount] = useState(0);
 
-  const formatPrice = (price: number, productId?: string): string => {
-    if (productId) {
-      const product = products.find((p) => p.id === productId);
-      if (product && getRemainingStock(product, cart) <= 0) {
-        return "SOLD OUT";
-      }
+  const getProductPriceDisplay = (price: number, productId: string): string => {
+    if (isProductSoldOut(productId, products, cart)) {
+      return SOLD_OUT_TEXT;
     }
 
-    if (isAdmin) {
-      return `${price.toLocaleString()}원`;
-    }
-
-    return `₩${price.toLocaleString()}`;
+    return isAdmin ? `${formatPrice(price)}원` : `₩${formatPrice(price)}`;
   };
 
   useEffect(() => {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
     setTotalItemCount(count);
   }, [cart]);
 
@@ -163,7 +159,7 @@ const App = () => {
             addCoupon={addCoupon}
             deleteCoupon={deleteCoupon}
             addNotification={addNotification}
-            formatPrice={formatPrice}
+            getProductPriceDisplay={getProductPriceDisplay}
           />
         )}
         {!isAdmin && (
@@ -175,7 +171,7 @@ const App = () => {
             coupons={coupons}
             setSelectedCoupon={setSelectedCoupon}
             calculateTotal={calculateTotal}
-            formatPrice={formatPrice}
+            getProductPriceDisplay={getProductPriceDisplay}
             addToCart={addToCart}
             removeFromCart={removeFromCart}
             calculateItemTotal={calculateItemTotal}

@@ -3,6 +3,11 @@ import { CartItem, Coupon } from "../../types";
 import { ProductWithUI } from "../App";
 import { CartTotal, getRemainingStock } from "../models/cart";
 import { BasketIcon, CloseXIcon, ImageIcon } from "../components/icons";
+import {
+  calculateDiscountRate,
+  formatPrice,
+  toPercentage,
+} from "../utils/formatters";
 
 interface CartPageProps {
   products: ProductWithUI[];
@@ -15,7 +20,7 @@ interface CartPageProps {
     cart: CartItem[],
     selectedCoupon: Coupon | null
   ) => CartTotal;
-  formatPrice: (price: number, productId?: string) => string;
+  getProductPriceDisplay: (price: number, productId: string) => string;
   addToCart: (product: ProductWithUI) => void;
   removeFromCart: (productId: string) => void;
   calculateItemTotal: (item: CartItem, cart: CartItem[]) => number;
@@ -32,7 +37,7 @@ const CartPage = ({
   coupons,
   setSelectedCoupon,
   calculateTotal,
-  formatPrice,
+  getProductPriceDisplay,
   addToCart,
   removeFromCart,
   calculateItemTotal,
@@ -103,8 +108,9 @@ const CartPage = ({
                       {product.discounts.length > 0 && (
                         <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
                           ~
-                          {Math.max(...product.discounts.map((d) => d.rate)) *
-                            100}
+                          {toPercentage(
+                            Math.max(...product.discounts.map((d) => d.rate))
+                          )}
                           %
                         </span>
                       )}
@@ -124,12 +130,12 @@ const CartPage = ({
                       {/* 가격 정보 */}
                       <div className="mb-3">
                         <p className="text-lg font-bold text-gray-900">
-                          {formatPrice(product.price, product.id)}
+                          {getProductPriceDisplay(product.price, product.id)}
                         </p>
                         {product.discounts.length > 0 && (
                           <p className="text-xs text-gray-500">
                             {product.discounts[0].quantity}개 이상 구매시 할인{" "}
-                            {product.discounts[0].rate * 100}%
+                            {toPercentage(product.discounts[0].rate)}%
                           </p>
                         )}
                       </div>
@@ -191,7 +197,7 @@ const CartPage = ({
                   const originalPrice = item.product.price * item.quantity;
                   const hasDiscount = itemTotal < originalPrice;
                   const discountRate = hasDiscount
-                    ? Math.round((1 - itemTotal / originalPrice) * 100)
+                    ? calculateDiscountRate(originalPrice, itemTotal)
                     : 0;
 
                   return (
@@ -239,7 +245,7 @@ const CartPage = ({
                             </span>
                           )}
                           <p className="text-sm font-medium text-gray-900">
-                            {Math.round(itemTotal).toLocaleString()}원
+                            {formatPrice(Math.round(itemTotal))}원
                           </p>
                         </div>
                       </div>
@@ -278,7 +284,7 @@ const CartPage = ({
                       <option key={coupon.code} value={coupon.code}>
                         {coupon.name} (
                         {coupon.discountType === "amount"
-                          ? `${coupon.discountValue.toLocaleString()}원`
+                          ? `${formatPrice(coupon.discountValue)}원`
                           : `${coupon.discountValue}%`}
                         )
                       </option>
@@ -293,7 +299,7 @@ const CartPage = ({
                   <div className="flex justify-between">
                     <span className="text-gray-600">상품 금액</span>
                     <span className="font-medium">
-                      {totals.totalBeforeDiscount.toLocaleString()}원
+                      {formatPrice(totals.totalBeforeDiscount)}원
                     </span>
                   </div>
                   {totals.totalBeforeDiscount - totals.totalAfterDiscount >
@@ -302,9 +308,9 @@ const CartPage = ({
                       <span>할인 금액</span>
                       <span>
                         -
-                        {(
+                        {formatPrice(
                           totals.totalBeforeDiscount - totals.totalAfterDiscount
-                        ).toLocaleString()}
+                        )}
                         원
                       </span>
                     </div>
@@ -312,7 +318,7 @@ const CartPage = ({
                   <div className="flex justify-between py-2 border-t border-gray-200">
                     <span className="font-semibold">결제 예정 금액</span>
                     <span className="font-bold text-lg text-gray-900">
-                      {totals.totalAfterDiscount.toLocaleString()}원
+                      {formatPrice(totals.totalAfterDiscount)}원
                     </span>
                   </div>
                 </div>
@@ -321,7 +327,7 @@ const CartPage = ({
                   onClick={completeOrder}
                   className="w-full mt-4 py-3 bg-yellow-400 text-gray-900 rounded-md font-medium hover:bg-yellow-500 transition-colors"
                 >
-                  {totals.totalAfterDiscount.toLocaleString()}원 결제하기
+                  {formatPrice(totals.totalAfterDiscount)}원 결제하기
                 </button>
 
                 <div className="mt-3 text-xs text-gray-500 text-center">

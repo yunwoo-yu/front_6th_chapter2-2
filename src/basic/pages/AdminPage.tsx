@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ProductWithUI } from "../App";
 import { Coupon } from "../../types";
 import { CloseXIcon, PlusIcon, TrashIcon } from "../components/icons";
+import { toDecimal, toPercentage } from "../utils/formatters";
 
 interface AdminPageProps {
   products: ProductWithUI[];
@@ -15,7 +16,7 @@ interface AdminPageProps {
     message: string,
     type: "error" | "success" | "warning"
   ) => void;
-  formatPrice: (price: number, productId?: string) => string;
+  getProductPriceDisplay: (price: number, productId: string) => string;
 }
 
 const AdminPage = ({
@@ -27,7 +28,7 @@ const AdminPage = ({
   addCoupon,
   deleteCoupon,
   addNotification,
-  formatPrice,
+  getProductPriceDisplay,
 }: AdminPageProps) => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
@@ -183,7 +184,7 @@ const AdminPage = ({
                         {product.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatPrice(product.price, product.id)}
+                        {getProductPriceDisplay(product.price, product.id)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <span
@@ -357,11 +358,12 @@ const AdminPage = ({
                         <span className="text-sm">개 이상 구매 시</span>
                         <input
                           type="number"
-                          value={discount.rate * 100}
+                          value={toPercentage(discount.rate)}
                           onChange={(e) => {
                             const newDiscounts = [...productForm.discounts];
-                            newDiscounts[index].rate =
-                              (parseInt(e.target.value) || 0) / 100;
+                            newDiscounts[index].rate = toDecimal(
+                              parseInt(e.target.value) || 0
+                            );
                             setProductForm({
                               ...productForm,
                               discounts: newDiscounts,
@@ -460,7 +462,7 @@ const AdminPage = ({
                       <div className="mt-2">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white text-indigo-700">
                           {coupon.discountType === "amount"
-                            ? `${coupon.discountValue.toLocaleString()}원 할인`
+                            ? `${formatPrice(coupon.discountValue)}원 할인`
                             : `${coupon.discountValue}% 할인`}
                         </span>
                       </div>
