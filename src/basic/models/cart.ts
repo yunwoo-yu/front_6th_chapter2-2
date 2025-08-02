@@ -2,7 +2,7 @@ import { applyCoupon } from "../../refactoring(hint)/models/coupon";
 import { CartItem, Coupon, Product } from "../../types";
 import { getMaxApplicableDiscount } from "./discount";
 
-interface CartTotal {
+export interface CartTotal {
   totalBeforeDiscount: number;
   totalAfterDiscount: number;
 }
