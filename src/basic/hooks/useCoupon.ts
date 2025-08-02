@@ -38,7 +38,9 @@ export function useCoupon({
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
-      const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
+      const existingCoupon = coupons.find(
+        (coupon) => coupon.code === newCoupon.code
+      );
 
       if (existingCoupon) {
         addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
@@ -53,10 +55,12 @@ export function useCoupon({
 
   const deleteCoupon = useCallback(
     (couponCode: string) => {
-      setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
+      setCoupons((prev) => prev.filter((coupon) => coupon.code !== couponCode));
+
       if (selectedCoupon?.code === couponCode) {
         setSelectedCoupon(null);
       }
+
       addNotification("쿠폰이 삭제되었습니다.", "success");
     },
     [selectedCoupon, addNotification]
