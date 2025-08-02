@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CartItem, Coupon, Product } from "../types";
+import { calculateItemTotal } from "./models/cart";
 
 interface ProductWithUI extends Product {
   description?: string;
@@ -142,32 +143,6 @@ const App = () => {
     return `₩${price.toLocaleString()}`;
   };
 
-  const getMaxApplicableDiscount = (item: CartItem): number => {
-    const { discounts } = item.product;
-    const { quantity } = item;
-
-    const baseDiscount = discounts.reduce((maxDiscount, discount) => {
-      return quantity >= discount.quantity && discount.rate > maxDiscount
-        ? discount.rate
-        : maxDiscount;
-    }, 0);
-
-    const hasBulkPurchase = cart.some((cartItem) => cartItem.quantity >= 10);
-    if (hasBulkPurchase) {
-      return Math.min(baseDiscount + 0.05, 0.5); // 대량 구매 시 추가 5% 할인
-    }
-
-    return baseDiscount;
-  };
-
-  const calculateItemTotal = (item: CartItem): number => {
-    const { price } = item.product;
-    const { quantity } = item;
-    const discount = getMaxApplicableDiscount(item);
-
-    return Math.round(price * quantity * (1 - discount));
-  };
-
   const calculateCartTotal = (): {
     totalBeforeDiscount: number;
     totalAfterDiscount: number;
@@ -178,7 +153,7 @@ const App = () => {
     cart.forEach((item) => {
       const itemPrice = item.product.price * item.quantity;
       totalBeforeDiscount += itemPrice;
-      totalAfterDiscount += calculateItemTotal(item);
+      totalAfterDiscount += calculateItemTotal(item, cart);
     });
 
     if (selectedCoupon) {
@@ -1325,7 +1300,7 @@ const App = () => {
                   ) : (
                     <div className="space-y-3">
                       {cart.map((item) => {
-                        const itemTotal = calculateItemTotal(item);
+                        const itemTotal = calculateItemTotal(item, cart);
                         const originalPrice =
                           item.product.price * item.quantity;
                         const hasDiscount = itemTotal < originalPrice;
