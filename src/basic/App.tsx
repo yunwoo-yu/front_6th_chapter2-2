@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { CartItem, Coupon, Product } from "../types";
-import { calculateCartTotal, calculateItemTotal } from "./models/cart";
+import {
+  calculateCartTotal,
+  calculateItemTotal,
+  updateCartItemQuantity,
+} from "./models/cart";
 
 interface ProductWithUI extends Product {
   description?: string;
@@ -245,20 +249,18 @@ const App = () => {
       }
 
       const product = products.find((p) => p.id === productId);
+
       if (!product) return;
 
       const maxStock = product.stock;
+
       if (newQuantity > maxStock) {
         addNotification(`재고는 ${maxStock}개까지만 있습니다.`, "error");
         return;
       }
 
       setCart((prevCart) =>
-        prevCart.map((item) =>
-          item.product.id === productId
-            ? { ...item, quantity: newQuantity }
-            : item
-        )
+        updateCartItemQuantity(prevCart, productId, newQuantity)
       );
     },
     [products, removeFromCart, addNotification, getRemainingStock]
@@ -270,6 +272,8 @@ const App = () => {
         cart,
         selectedCoupon
       ).totalAfterDiscount;
+
+      console.log(currentTotal);
 
       if (currentTotal < 10000 && coupon.discountType === "percentage") {
         addNotification(

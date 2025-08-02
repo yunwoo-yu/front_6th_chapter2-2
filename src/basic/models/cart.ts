@@ -40,3 +40,13 @@ export const calculateCartTotal = (
     totalAfterDiscount: Math.round(totalAfterDiscount),
   };
 };
+
+export const updateCartItemQuantity = (
+  cart: CartItem[],
+  productId: string,
+  quantity: number
+) => {
+  return cart.map((item) =>
+    item.product.id === productId ? { ...item, quantity } : item
+  );
+};
