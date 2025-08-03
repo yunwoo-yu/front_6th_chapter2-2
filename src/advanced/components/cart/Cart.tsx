@@ -1,34 +1,33 @@
-import { CartItem as CartItemType, Coupon } from "../../../types";
-import { CartTotal } from "../../models/cart";
+import { useCallback } from "react";
+import { Coupon } from "../../../types";
+import { useCart, useCartActions } from "../../hooks/useCart";
+import { useNotificationActions } from "../../hooks/useNotification";
+import { calculateCartTotal } from "../../models/cart";
 import { BasketIcon } from "../icons";
 import Button from "../ui/Button";
 import { CartItem } from "./CartItem";
 
 interface CartProps {
-  cart: CartItemType[];
   coupons: Coupon[];
-  selectedCoupon: Coupon | null;
-  totals: CartTotal;
-  calculateItemTotal: (item: CartItemType, cart: CartItemType[]) => number;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  setSelectedCoupon: (coupon: Coupon | null) => void;
-  applyCoupon: (coupon: Coupon) => void;
-  completeOrder: () => void;
 }
 
-export const Cart = ({
-  cart,
-  coupons,
-  selectedCoupon,
-  totals,
-  calculateItemTotal,
-  removeFromCart,
-  updateQuantity,
-  setSelectedCoupon,
-  applyCoupon,
-  completeOrder,
-}: CartProps) => {
+export const Cart = ({ coupons }: CartProps) => {
+  const { addNotification } = useNotificationActions();
+  const { cart, selectedCoupon } = useCart();
+  const { clearCart, applyCoupon, unapplyCoupon } = useCartActions();
+  const totals = calculateCartTotal(cart, selectedCoupon);
+
+  const completeOrder = useCallback(() => {
+    const orderNumber = `ORD-${Date.now()}`;
+
+    addNotification(
+      `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
+      "success"
+    );
+
+    clearCart();
+  }, [addNotification, clearCart]);
+
   return (
     <div className="sticky top-24 space-y-4">
       {/* 장바구니 목록 */}
@@ -49,13 +48,7 @@ export const Cart = ({
         ) : (
           <div className="space-y-3">
             {cart.map((item) => (
-              <CartItem
-                key={item.product.id}
-                item={item}
-                itemTotal={calculateItemTotal(item, cart)}
-                removeFromCart={removeFromCart}
-                updateQuantity={updateQuantity}
-              />
+              <CartItem key={item.product.id} item={item} />
             ))}
           </div>
         )}
@@ -78,7 +71,7 @@ export const Cart = ({
                 onChange={(e) => {
                   const coupon = coupons.find((c) => c.code === e.target.value);
                   if (coupon) applyCoupon(coupon);
-                  else setSelectedCoupon(null);
+                  else unapplyCoupon();
                 }}
               >
                 <option value="">쿠폰 선택</option>

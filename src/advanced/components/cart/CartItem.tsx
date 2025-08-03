@@ -1,20 +1,18 @@
 import { CartItem as CartItemType } from "../../../types";
+import { useCart, useCartActions } from "../../hooks/useCart";
+import { calculateItemTotal } from "../../models/cart";
 import { formatPrice } from "../../utils/formatters";
 import { CloseXIcon } from "../icons";
 
 interface CartItemProps {
   item: CartItemType;
-  itemTotal: number;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
 }
 
-export const CartItem = ({
-  item,
-  itemTotal,
-  removeFromCart,
-  updateQuantity,
-}: CartItemProps) => {
+export const CartItem = ({ item }: CartItemProps) => {
+  const { cart } = useCart();
+  const { removeFromCart, updateQuantity } = useCartActions();
+
+  const itemTotal = calculateItemTotal(item, cart);
   const originalPrice = item.product.price * item.quantity;
   const hasDiscount = itemTotal < originalPrice;
   const discountRate = hasDiscount

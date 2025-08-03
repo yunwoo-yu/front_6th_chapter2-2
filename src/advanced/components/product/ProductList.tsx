@@ -1,21 +1,16 @@
 import { ProductWithUI } from "../../App";
-import { CartItem } from "../../../types";
 import { ProductCard } from "./ProductCard";
 
 interface ProductListProps {
   products: ProductWithUI[];
-  cart: CartItem[];
   debouncedSearchTerm: string;
   getProductPriceDisplay: (price: number, productId: string) => string;
-  onAddToCart: (product: ProductWithUI) => void;
 }
 
 export const ProductList = ({
   products,
-  cart,
   debouncedSearchTerm,
   getProductPriceDisplay,
-  onAddToCart,
 }: ProductListProps) => {
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
@@ -49,9 +44,7 @@ export const ProductList = ({
             <ProductCard
               key={product.id}
               product={product}
-              cart={cart}
               getProductPriceDisplay={getProductPriceDisplay}
-              onAddToCart={onAddToCart}
             />
           ))}
         </div>

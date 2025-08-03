@@ -1,19 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Product } from "../types";
 import { CartIcon, CloseXIcon } from "./components/icons";
-import { useCart } from "./hooks/useCart";
+import Button from "./components/ui/Button";
+import { useCart } from "./hooks/useCart.tsx";
 import { useCoupon } from "./hooks/useCoupon";
 import {
   useNotification,
   useNotificationActions,
 } from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
-import { calculateItemTotal } from "./models/cart";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
 import { formatPrice, isProductSoldOut } from "./utils/formatters";
 import { useDebounce } from "./utils/hooks/useDebounce";
-import Button from "./components/ui/Button";
 
 export interface ProductWithUI extends Product {
   description?: string;
@@ -23,30 +22,15 @@ export interface ProductWithUI extends Product {
 const SOLD_OUT_TEXT = "SOLD OUT";
 
 const App = () => {
+  const { cart, totalItemCount } = useCart();
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-
-  const {
-    cart,
-    selectedCoupon,
-    setSelectedCoupon,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
-    calculateTotal,
-    clearCart,
-  } = useCart();
-  const { coupons, addCoupon, deleteCoupon } = useCoupon({
-    selectedCoupon,
-    setSelectedCoupon,
-  });
+  const { coupons, addCoupon, deleteCoupon } = useCoupon();
   const notifications = useNotification();
-  const { addNotification, removeNotification } = useNotificationActions();
+  const { removeNotification } = useNotificationActions();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const [totalItemCount, setTotalItemCount] = useState(0);
 
   const getProductPriceDisplay = (price: number, productId: string): string => {
     if (isProductSoldOut(productId, products, cart)) {
@@ -55,31 +39,6 @@ const App = () => {
 
     return isAdmin ? `${formatPrice(price)}원` : `₩${formatPrice(price)}`;
   };
-
-  useEffect(() => {
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    setTotalItemCount(count);
-  }, [cart]);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } else {
-      localStorage.removeItem("cart");
-    }
-  }, [cart]);
-
-  const completeOrder = useCallback(() => {
-    const orderNumber = `ORD-${Date.now()}`;
-
-    addNotification(
-      `주문이 완료되었습니다. 주문번호: ${orderNumber}`,
-      "success"
-    );
-
-    clearCart();
-  }, [addNotification, clearCart]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -164,19 +123,9 @@ const App = () => {
         {!isAdmin && (
           <CartPage
             products={products}
-            cart={cart}
-            selectedCoupon={selectedCoupon}
             debouncedSearchTerm={debouncedSearchTerm}
             coupons={coupons}
-            setSelectedCoupon={setSelectedCoupon}
-            calculateTotal={calculateTotal}
             getProductPriceDisplay={getProductPriceDisplay}
-            addToCart={addToCart}
-            removeFromCart={removeFromCart}
-            calculateItemTotal={calculateItemTotal}
-            updateQuantity={updateQuantity}
-            applyCoupon={applyCoupon}
-            completeOrder={completeOrder}
           />
         )}
       </main>

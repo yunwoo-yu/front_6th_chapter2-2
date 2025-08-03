@@ -57,12 +57,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    setTotalItemCount(count);
-  }, [cart]);
-
-  useEffect(() => {
     if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {

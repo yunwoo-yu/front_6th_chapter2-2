@@ -1,5 +1,5 @@
 import { ProductWithUI } from "../../App";
-import { CartItem } from "../../../types";
+import { useCart, useCartActions } from "../../hooks/useCart";
 import { getRemainingStock } from "../../models/cart";
 import { ImageIcon } from "../icons";
 import Badge from "../ui/Badge";
@@ -7,17 +7,15 @@ import Button from "../ui/Button";
 
 interface ProductCardProps {
   product: ProductWithUI;
-  cart: CartItem[];
   getProductPriceDisplay: (price: number, productId: string) => string;
-  onAddToCart: (product: ProductWithUI) => void;
 }
 
 export const ProductCard = ({
   product,
-  cart,
   getProductPriceDisplay,
-  onAddToCart,
 }: ProductCardProps) => {
+  const { cart } = useCart();
+  const { addToCart } = useCartActions();
   const remainingStock = getRemainingStock(product, cart);
 
   return (
@@ -75,7 +73,7 @@ export const ProductCard = ({
 
         {/* 장바구니 버튼 */}
         <Button
-          onClick={() => onAddToCart(product)}
+          onClick={() => addToCart(product)}
           disabled={remainingStock <= 0}
           sizes="lg"
           fullWidth
