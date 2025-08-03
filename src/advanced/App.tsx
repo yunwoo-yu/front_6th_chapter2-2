@@ -3,7 +3,6 @@ import { Product } from "../types";
 import { CartIcon } from "./components/icons";
 import Button from "./components/ui/Button";
 import { useCart } from "./hooks/useCart.tsx";
-import { useCoupon } from "./hooks/useCoupon";
 import { useProducts } from "./hooks/useProducts";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
@@ -20,10 +19,8 @@ const SOLD_OUT_TEXT = "SOLD OUT";
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
   const { cart, totalItemCount } = useCart();
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { coupons, addCoupon, deleteCoupon } = useCoupon();
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const getProductPriceDisplay = (price: number, productId: string): string => {
@@ -81,12 +78,9 @@ const App = () => {
         {isAdmin && (
           <AdminPage
             products={products}
-            coupons={coupons}
             addProduct={addProduct}
             updateProduct={updateProduct}
             deleteProduct={deleteProduct}
-            addCoupon={addCoupon}
-            deleteCoupon={deleteCoupon}
             getProductPriceDisplay={getProductPriceDisplay}
           />
         )}
@@ -94,7 +88,6 @@ const App = () => {
           <CartPage
             products={products}
             debouncedSearchTerm={debouncedSearchTerm}
-            coupons={coupons}
             getProductPriceDisplay={getProductPriceDisplay}
           />
         )}

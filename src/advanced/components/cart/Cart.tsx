@@ -1,17 +1,15 @@
 import { useCallback } from "react";
-import { Coupon } from "../../../types";
+
 import { useCart, useCartActions } from "../../hooks/useCart";
 import { useNotificationActions } from "../../hooks/useNotification";
 import { calculateCartTotal } from "../../models/cart";
 import { BasketIcon } from "../icons";
 import Button from "../ui/Button";
 import { CartItem } from "./CartItem";
+import { useCoupon } from "../../hooks/useCoupon";
 
-interface CartProps {
-  coupons: Coupon[];
-}
-
-export const Cart = ({ coupons }: CartProps) => {
+export const Cart = () => {
+  const coupons = useCoupon();
   const { addNotification } = useNotificationActions();
   const { cart, selectedCoupon } = useCart();
   const { clearCart, applyCoupon, unapplyCoupon } = useCartActions();

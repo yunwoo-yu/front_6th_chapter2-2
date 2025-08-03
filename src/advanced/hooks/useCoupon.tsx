@@ -1,8 +1,23 @@
-import { useCallback, useEffect } from "react";
+import {
+  createContext,
+  memo,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { Coupon } from "../../types";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 import { useCart, useCartActions } from "./useCart";
 import { useNotificationActions } from "./useNotification";
+
+type CouponContextTypes = Coupon[];
+
+interface CouponContextActionsTypes {
+  addCoupon: (newCoupon: Coupon) => void;
+  deleteCoupon: (couponCode: string) => void;
+}
 
 const initialCoupons: Coupon[] = [
   {
@@ -19,7 +34,14 @@ const initialCoupons: Coupon[] = [
   },
 ];
 
-export function useCoupon() {
+const CouponContext = createContext<CouponContextTypes>(initialCoupons);
+
+const CouponContextActions = createContext<CouponContextActionsTypes>({
+  addCoupon: () => {},
+  deleteCoupon: () => {},
+});
+
+export const CouponProvider = memo(({ children }: PropsWithChildren) => {
   const [coupons, setCoupons] = useLocalStorage<Coupon[]>(
     "coupons",
     initialCoupons
@@ -62,9 +84,39 @@ export function useCoupon() {
     localStorage.setItem("coupons", JSON.stringify(coupons));
   }, [coupons]);
 
-  return {
-    coupons,
-    addCoupon,
-    deleteCoupon,
-  };
-}
+  const actions = useMemo(
+    () => ({
+      addCoupon,
+      deleteCoupon,
+    }),
+    [addCoupon, deleteCoupon]
+  );
+
+  return (
+    <CouponContext.Provider value={coupons}>
+      <CouponContextActions.Provider value={actions}>
+        {children}
+      </CouponContextActions.Provider>
+    </CouponContext.Provider>
+  );
+});
+
+export const useCoupon = () => {
+  const context = useContext(CouponContext);
+
+  if (!context) {
+    throw new Error("useCoupon must be used within a CouponProvider");
+  }
+
+  return context;
+};
+
+export const useCouponActions = () => {
+  const context = useContext(CouponContextActions);
+
+  if (!context) {
+    throw new Error("useCouponActions must be used within a CouponProvider");
+  }
+
+  return context;
+};

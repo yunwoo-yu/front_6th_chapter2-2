@@ -1,21 +1,18 @@
 import { useState } from "react";
-import { Coupon } from "../../types";
 import { ProductWithUI } from "../App";
+import { CouponForm } from "../components/admin/CouponForm";
 import { ProductForm } from "../components/admin/ProductForm";
 import { ProductTable } from "../components/admin/ProductTable";
 import { PlusIcon, TrashIcon } from "../components/icons";
-import { formatPrice } from "../utils/formatters";
-import { CouponForm } from "../components/admin/CouponForm";
 import Button from "../components/ui/Button";
+import { useCoupon, useCouponActions } from "../hooks/useCoupon";
+import { formatPrice } from "../utils/formatters";
 
 interface AdminPageProps {
   products: ProductWithUI[];
   addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
   updateProduct: (productId: string, product: Partial<ProductWithUI>) => void;
   deleteProduct: (productId: string) => void;
-  coupons: Coupon[];
-  addCoupon: (coupon: Coupon) => void;
-  deleteCoupon: (code: string) => void;
   getProductPriceDisplay: (price: number, productId: string) => string;
 }
 
@@ -24,9 +21,6 @@ const AdminPage = ({
   addProduct,
   updateProduct,
   deleteProduct,
-  coupons,
-  addCoupon,
-  deleteCoupon,
   getProductPriceDisplay,
 }: AdminPageProps) => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
@@ -48,6 +42,8 @@ const AdminPage = ({
     discountType: "amount" as "amount" | "percentage",
     discountValue: 0,
   });
+  const coupons = useCoupon();
+  const { addCoupon, deleteCoupon } = useCouponActions();
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
