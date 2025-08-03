@@ -1,6 +1,7 @@
 import { CartItem as CartItemType, Coupon } from "../../../types";
 import { CartTotal } from "../../models/cart";
 import { BasketIcon } from "../icons";
+import Button from "../ui/Button";
 import { CartItem } from "./CartItem";
 
 interface CartProps {
@@ -124,12 +125,15 @@ export const Cart = ({
               </div>
             </div>
 
-            <button
+            <Button
               onClick={completeOrder}
-              className="w-full mt-4 py-3 bg-yellow-400 text-gray-900 rounded-md font-medium hover:bg-yellow-500 transition-colors"
+              variant="payment"
+              sizes="lg"
+              fullWidth
+              className="mt-4 py-3"
             >
               {totals.totalAfterDiscount.toLocaleString()}원 결제하기
-            </button>
+            </Button>
 
             <div className="mt-3 text-xs text-gray-500 text-center">
               <p>* 실제 결제는 이루어지지 않습니다</p>

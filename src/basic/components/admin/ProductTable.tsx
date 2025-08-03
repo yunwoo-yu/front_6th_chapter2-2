@@ -1,4 +1,5 @@
 import { ProductWithUI } from "../../App";
+import Button from "../ui/Button";
 
 interface ProductTableProps {
   products: ProductWithUI[];
@@ -61,18 +62,20 @@ export const ProductTable = ({
                 {product.description || "-"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
+                <Button
                   onClick={() => startEditProduct(product)}
-                  className="text-indigo-600 hover:text-indigo-900 mr-3"
+                  variant="ghost"
+                  className="text-indigo-600 hover:text-indigo-900 mr-3 px-0 py-0"
                 >
                   수정
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => deleteProduct(product.id)}
-                  className="text-red-600 hover:text-red-900"
+                  variant="ghost"
+                  className="text-red-600 hover:text-red-900 px-0 py-0"
                 >
                   삭제
-                </button>
+                </Button>
               </td>
             </tr>
           ))}

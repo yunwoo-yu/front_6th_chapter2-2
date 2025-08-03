@@ -6,6 +6,7 @@ import { ProductTable } from "../components/admin/ProductTable";
 import { PlusIcon, TrashIcon } from "../components/icons";
 import { formatPrice } from "../utils/formatters";
 import { CouponForm } from "../components/admin/CouponForm";
+import Button from "../components/ui/Button";
 
 interface AdminPageProps {
   products: ProductWithUI[];
@@ -151,7 +152,7 @@ const AdminPage = ({
           <div className="p-6 border-b border-gray-200">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold">상품 목록</h2>
-              <button
+              <Button
                 onClick={() => {
                   setEditingProduct("new");
                   setProductForm({
@@ -163,10 +164,12 @@ const AdminPage = ({
                   });
                   setShowProductForm(true);
                 }}
-                className="px-4 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800"
+                variant="primary"
+                sizes="lg"
+                className="text-sm"
               >
                 새 상품 추가
-              </button>
+              </Button>
             </div>
           </div>
 
