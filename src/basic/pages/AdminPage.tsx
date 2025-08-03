@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ProductWithUI } from "../App";
 import { Coupon } from "../../types";
 import { CloseXIcon, PlusIcon, TrashIcon } from "../components/icons";
-import { toDecimal, toPercentage } from "../utils/formatters";
+import { formatPrice, toDecimal, toPercentage } from "../utils/formatters";
 
 interface AdminPageProps {
   products: ProductWithUI[];
