@@ -7,7 +7,7 @@ import { CouponProvider } from "./hooks/useCoupon.tsx";
 import { NotificationProvider } from "./hooks/useNotification.tsx";
 import { ProductProvider } from "./hooks/useProducts.tsx";
 import { SearchProvider } from "./hooks/useSearch.tsx";
-import AdminPage from "./pages/AdminPage";
+import AdminPage from "./pages/admin/AdminPage.tsx";
 import CartPage from "./pages/cart/CartPage.tsx";
 
 export interface ProductWithUI extends Product {

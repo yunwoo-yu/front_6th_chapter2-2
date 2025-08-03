@@ -1,12 +1,14 @@
 import { Coupon } from "../../../types";
 import { TrashIcon } from "../icons";
+import { useCouponActions } from "../../hooks/useCoupon";
 
 interface CouponCardProps {
   coupon: Coupon;
-  onDelete: (code: string) => void;
 }
 
-export const CouponCard = ({ coupon, onDelete }: CouponCardProps) => {
+export const CouponCard = ({ coupon }: CouponCardProps) => {
+  const { deleteCoupon } = useCouponActions();
+
   return (
     <div className="relative bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
       <div className="flex justify-between items-start">
@@ -22,7 +24,7 @@ export const CouponCard = ({ coupon, onDelete }: CouponCardProps) => {
           </div>
         </div>
         <button
-          onClick={() => onDelete(coupon.code)}
+          onClick={() => deleteCoupon(coupon.code)}
           className="text-gray-400 hover:text-red-600 transition-colors"
         >
           <TrashIcon className="w-5 h-5" />

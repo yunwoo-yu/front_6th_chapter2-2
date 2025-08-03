@@ -5,10 +5,10 @@ import { formatPrice, isProductSoldOut } from "../../utils/formatters";
 import Button from "../ui/Button";
 
 interface ProductTableProps {
-  startEditProduct: (product: ProductWithUI) => void;
+  handleEditProduct: (product: ProductWithUI) => void;
 }
 
-export const ProductTable = ({ startEditProduct }: ProductTableProps) => {
+export const ProductTable = ({ handleEditProduct }: ProductTableProps) => {
   const products = useProducts();
   const { cart } = useCart();
   const { deleteProduct } = useProductActions();
@@ -64,7 +64,7 @@ export const ProductTable = ({ startEditProduct }: ProductTableProps) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <Button
-                  onClick={() => startEditProduct(product)}
+                  onClick={() => handleEditProduct(product)}
                   variant="ghost"
                   className="text-indigo-600 hover:text-indigo-900 mr-3 px-0 py-0"
                 >
