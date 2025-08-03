@@ -1,11 +1,10 @@
 import { useProducts } from "../../hooks/useProducts";
+import { useSearch } from "../../hooks/useSearch";
 import { ProductCard } from "./ProductCard";
 
-interface ProductListProps {
-  debouncedSearchTerm: string;
-}
+export const ProductList = () => {
+  const { debouncedSearchTerm } = useSearch();
 
-export const ProductList = ({ debouncedSearchTerm }: ProductListProps) => {
   const products = useProducts();
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
