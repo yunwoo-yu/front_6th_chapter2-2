@@ -60,11 +60,11 @@ const CartPage = ({
           selectedCoupon={selectedCoupon}
           totals={totals}
           calculateItemTotal={calculateItemTotal}
-          onRemoveFromCart={removeFromCart}
-          onUpdateQuantity={updateQuantity}
-          onSetSelectedCoupon={setSelectedCoupon}
-          onApplyCoupon={applyCoupon}
-          onCompleteOrder={completeOrder}
+          removeFromCart={removeFromCart}
+          updateQuantity={updateQuantity}
+          setSelectedCoupon={setSelectedCoupon}
+          applyCoupon={applyCoupon}
+          completeOrder={completeOrder}
         />
       </div>
     </div>

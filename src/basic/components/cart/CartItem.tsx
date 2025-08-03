@@ -1,18 +1,19 @@
 import { CartItem as CartItemType } from "../../../types";
+import { formatPrice } from "../../utils/formatters";
 import { CloseXIcon } from "../icons";
 
 interface CartItemProps {
   item: CartItemType;
   itemTotal: number;
-  onRemove: (productId: string) => void;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
 }
 
 export const CartItem = ({
   item,
   itemTotal,
-  onRemove,
-  onUpdateQuantity,
+  removeFromCart,
+  updateQuantity,
 }: CartItemProps) => {
   const originalPrice = item.product.price * item.quantity;
   const hasDiscount = itemTotal < originalPrice;
@@ -27,7 +28,7 @@ export const CartItem = ({
           {item.product.name}
         </h4>
         <button
-          onClick={() => onRemove(item.product.id)}
+          onClick={() => removeFromCart(item.product.id)}
           className="text-gray-400 hover:text-red-500 ml-2"
         >
           <CloseXIcon className="w-4 h-4" />
@@ -37,7 +38,7 @@ export const CartItem = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <button
-            onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
+            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
             className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
           >
             <span className="text-xs">−</span>
@@ -46,7 +47,7 @@ export const CartItem = ({
             {item.quantity}
           </span>
           <button
-            onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
+            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
             className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
           >
             <span className="text-xs">+</span>
@@ -60,7 +61,7 @@ export const CartItem = ({
             </span>
           )}
           <p className="text-sm font-medium text-gray-900">
-            {Math.round(itemTotal).toLocaleString()}원
+            {formatPrice(Math.round(itemTotal))}원
           </p>
         </div>
       </div>

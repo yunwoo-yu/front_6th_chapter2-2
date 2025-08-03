@@ -9,11 +9,11 @@ interface CartProps {
   selectedCoupon: Coupon | null;
   totals: CartTotal;
   calculateItemTotal: (item: CartItemType, cart: CartItemType[]) => number;
-  onRemoveFromCart: (productId: string) => void;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
-  onSetSelectedCoupon: (coupon: Coupon | null) => void;
-  onApplyCoupon: (coupon: Coupon) => void;
-  onCompleteOrder: () => void;
+  removeFromCart: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  setSelectedCoupon: (coupon: Coupon | null) => void;
+  applyCoupon: (coupon: Coupon) => void;
+  completeOrder: () => void;
 }
 
 export const Cart = ({
@@ -22,11 +22,11 @@ export const Cart = ({
   selectedCoupon,
   totals,
   calculateItemTotal,
-  onRemoveFromCart,
-  onUpdateQuantity,
-  onSetSelectedCoupon,
-  onApplyCoupon,
-  onCompleteOrder,
+  removeFromCart,
+  updateQuantity,
+  setSelectedCoupon,
+  applyCoupon,
+  completeOrder,
 }: CartProps) => {
   return (
     <div className="sticky top-24 space-y-4">
@@ -52,8 +52,8 @@ export const Cart = ({
                 key={item.product.id}
                 item={item}
                 itemTotal={calculateItemTotal(item, cart)}
-                onRemove={onRemoveFromCart}
-                onUpdateQuantity={onUpdateQuantity}
+                removeFromCart={removeFromCart}
+                updateQuantity={updateQuantity}
               />
             ))}
           </div>
@@ -76,8 +76,8 @@ export const Cart = ({
                 value={selectedCoupon?.code || ""}
                 onChange={(e) => {
                   const coupon = coupons.find((c) => c.code === e.target.value);
-                  if (coupon) onApplyCoupon(coupon);
-                  else onSetSelectedCoupon(null);
+                  if (coupon) applyCoupon(coupon);
+                  else setSelectedCoupon(null);
                 }}
               >
                 <option value="">쿠폰 선택</option>
@@ -125,7 +125,7 @@ export const Cart = ({
             </div>
 
             <button
-              onClick={onCompleteOrder}
+              onClick={completeOrder}
               className="w-full mt-4 py-3 bg-yellow-400 text-gray-900 rounded-md font-medium hover:bg-yellow-500 transition-colors"
             >
               {totals.totalAfterDiscount.toLocaleString()}원 결제하기
