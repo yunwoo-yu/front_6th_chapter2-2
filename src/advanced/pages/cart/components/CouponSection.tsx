@@ -6,6 +6,16 @@ const CouponSection = () => {
   const { cart, selectedCoupon } = useCart();
   const { applyCoupon, unapplyCoupon } = useCartActions();
 
+  const handleChangeCoupon = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const coupon = coupons.find((c) => c.code === e.target.value);
+
+    if (coupon) {
+      applyCoupon(coupon);
+    } else {
+      unapplyCoupon();
+    }
+  };
+
   return (
     <>
       {cart.length > 0 && (
@@ -20,11 +30,7 @@ const CouponSection = () => {
             <select
               className="w-full text-sm border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
               value={selectedCoupon?.code || ""}
-              onChange={(e) => {
-                const coupon = coupons.find((c) => c.code === e.target.value);
-                if (coupon) applyCoupon(coupon);
-                else unapplyCoupon();
-              }}
+              onChange={handleChangeCoupon}
             >
               <option value="">쿠폰 선택</option>
               {coupons.map((coupon) => (
