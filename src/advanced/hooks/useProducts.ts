@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { ProductWithUI } from "../../basic/App";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import { useNotificationActions } from "./useNotification";
 
 const initialProducts: ProductWithUI[] = [
   {
@@ -36,17 +37,14 @@ const initialProducts: ProductWithUI[] = [
   },
 ];
 
-export function useProducts(
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void
-) {
+export const useProducts = () => {
   // TODO: 구현
   const [products, setProducts] = useLocalStorage<ProductWithUI[]>(
     "products",
     initialProducts
   );
+
+  const { addNotification } = useNotificationActions();
 
   const addProduct = useCallback(
     (newProduct: Omit<ProductWithUI, "id">) => {
@@ -90,4 +88,4 @@ export function useProducts(
     updateProduct,
     deleteProduct,
   };
-}
+};

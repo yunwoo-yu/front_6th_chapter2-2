@@ -10,15 +10,12 @@ import {
   updateCartItemQuantity,
 } from "../models/cart";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import { useNotificationActions } from "./useNotification";
 
-export function useCart(
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void
-) {
+export const useCart = () => {
   const [cart, setCart] = useLocalStorage<CartItem[]>("cart", []); // 장바구니 상태
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const { addNotification } = useNotificationActions();
 
   const addToCart = useCallback(
     (product: ProductWithUI) => {
@@ -117,4 +114,4 @@ export function useCart(
     calculateTotal,
     clearCart,
   };
-}
+};

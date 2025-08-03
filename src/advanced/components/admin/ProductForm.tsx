@@ -1,3 +1,4 @@
+import { useNotificationActions } from "../../hooks/useNotification";
 import { CloseXIcon } from "../icons";
 
 interface ProductFormData {
@@ -14,10 +15,6 @@ interface ProductFormProps {
   setProductForm: (form: ProductFormData) => void;
   handleProductSubmit: (e: React.FormEvent) => void;
   handleCancelProduct: () => void;
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
 }
 
 export const ProductForm = ({
@@ -26,8 +23,9 @@ export const ProductForm = ({
   setProductForm,
   handleProductSubmit,
   handleCancelProduct,
-  addNotification,
 }: ProductFormProps) => {
+  const { addNotification } = useNotificationActions();
+
   return (
     <div className="p-6 border-t border-gray-200 bg-gray-50">
       <form onSubmit={handleProductSubmit} className="space-y-4">

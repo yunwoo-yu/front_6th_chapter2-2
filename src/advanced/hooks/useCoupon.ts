@@ -1,12 +1,9 @@
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Coupon } from "../../types";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import { useNotificationActions } from "./useNotification";
 
 interface UseCouponProps {
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
   selectedCoupon: Coupon | null;
   setSelectedCoupon: Dispatch<SetStateAction<Coupon | null>>;
 }
@@ -27,7 +24,6 @@ const initialCoupons: Coupon[] = [
 ];
 
 export function useCoupon({
-  addNotification,
   selectedCoupon,
   setSelectedCoupon,
 }: UseCouponProps) {
@@ -35,6 +31,7 @@ export function useCoupon({
     "coupons",
     initialCoupons
   );
+  const { addNotification } = useNotificationActions();
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {

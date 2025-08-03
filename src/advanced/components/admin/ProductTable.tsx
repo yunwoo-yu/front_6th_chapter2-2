@@ -14,6 +14,8 @@ export const ProductTable = ({
   startEditProduct,
   deleteProduct,
 }: ProductTableProps) => {
+  console.log(products);
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">

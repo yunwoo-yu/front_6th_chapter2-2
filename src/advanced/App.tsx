@@ -3,7 +3,10 @@ import { Product } from "../types";
 import { CartIcon, CloseXIcon } from "./components/icons";
 import { useCart } from "./hooks/useCart";
 import { useCoupon } from "./hooks/useCoupon";
-import { useNotification } from "./hooks/useNotification";
+import {
+  useNotification,
+  useNotificationActions,
+} from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
 import { calculateItemTotal } from "./models/cart";
 import AdminPage from "./pages/AdminPage";
@@ -20,11 +23,7 @@ export interface ProductWithUI extends Product {
 const SOLD_OUT_TEXT = "SOLD OUT";
 
 const App = () => {
-  const { notifications, addNotification, removeNotification } =
-    useNotification();
-
-  const { products, addProduct, updateProduct, deleteProduct } =
-    useProducts(addNotification);
+  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
 
   const {
     cart,
@@ -36,12 +35,13 @@ const App = () => {
     applyCoupon,
     calculateTotal,
     clearCart,
-  } = useCart(addNotification);
+  } = useCart();
   const { coupons, addCoupon, deleteCoupon } = useCoupon({
-    addNotification,
     selectedCoupon,
     setSelectedCoupon,
   });
+  const notifications = useNotification();
+  const { addNotification, removeNotification } = useNotificationActions();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -158,7 +158,6 @@ const App = () => {
             deleteProduct={deleteProduct}
             addCoupon={addCoupon}
             deleteCoupon={deleteCoupon}
-            addNotification={addNotification}
             getProductPriceDisplay={getProductPriceDisplay}
           />
         )}

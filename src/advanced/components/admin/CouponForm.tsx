@@ -1,3 +1,5 @@
+import { useNotificationActions } from "../../hooks/useNotification";
+
 interface CouponFormData {
   name: string;
   code: string;
@@ -10,10 +12,6 @@ interface CouponFormProps {
   setCouponForm: (form: CouponFormData) => void;
   handleCouponSubmit: (e: React.FormEvent) => void;
   handleCancelCoupon: () => void;
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
 }
 
 export const CouponForm = ({
@@ -21,8 +19,9 @@ export const CouponForm = ({
   setCouponForm,
   handleCouponSubmit,
   handleCancelCoupon,
-  addNotification,
 }: CouponFormProps) => {
+  const { addNotification } = useNotificationActions();
+
   return (
     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
       <form onSubmit={handleCouponSubmit} className="space-y-4">

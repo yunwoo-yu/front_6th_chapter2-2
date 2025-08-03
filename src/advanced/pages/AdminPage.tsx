@@ -16,10 +16,6 @@ interface AdminPageProps {
   coupons: Coupon[];
   addCoupon: (coupon: Coupon) => void;
   deleteCoupon: (code: string) => void;
-  addNotification: (
-    message: string,
-    type: "error" | "success" | "warning"
-  ) => void;
   getProductPriceDisplay: (price: number, productId: string) => string;
 }
 
@@ -31,7 +27,6 @@ const AdminPage = ({
   coupons,
   addCoupon,
   deleteCoupon,
-  addNotification,
   getProductPriceDisplay,
 }: AdminPageProps) => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
@@ -47,7 +42,6 @@ const AdminPage = ({
     description: "",
     discounts: [] as Array<{ quantity: number; rate: number }>,
   });
-
   const [couponForm, setCouponForm] = useState({
     name: "",
     code: "",
@@ -186,7 +180,6 @@ const AdminPage = ({
               setProductForm={setProductForm}
               handleProductSubmit={handleProductSubmit}
               handleCancelProduct={handleCancelProduct}
-              addNotification={addNotification}
             />
           )}
         </section>
@@ -245,7 +238,6 @@ const AdminPage = ({
                 setCouponForm={setCouponForm}
                 handleCouponSubmit={handleCouponSubmit}
                 handleCancelCoupon={() => setShowCouponForm(false)}
-                addNotification={addNotification}
               />
             )}
           </div>
