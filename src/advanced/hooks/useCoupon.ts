@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Coupon } from "../../types";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
-import { useNotificationActions } from "./useNotification";
 import { useCart, useCartActions } from "./useCart";
+import { useNotificationActions } from "./useNotification";
 
 const initialCoupons: Coupon[] = [
   {
@@ -26,7 +26,7 @@ export function useCoupon() {
   );
   const { addNotification } = useNotificationActions();
   const { selectedCoupon } = useCart();
-  const { deleteCoupon: deleteSelectedCoupon } = useCartActions();
+  const { unapplyCoupon } = useCartActions();
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
@@ -50,7 +50,7 @@ export function useCoupon() {
       setCoupons((prev) => prev.filter((coupon) => coupon.code !== couponCode));
 
       if (selectedCoupon?.code === couponCode) {
-        deleteSelectedCoupon();
+        unapplyCoupon();
       }
 
       addNotification("쿠폰이 삭제되었습니다.", "success");

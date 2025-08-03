@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { Product } from "../types";
-import { CartIcon, CloseXIcon } from "./components/icons";
+import { CartIcon } from "./components/icons";
 import Button from "./components/ui/Button";
 import { useCart } from "./hooks/useCart.tsx";
 import { useCoupon } from "./hooks/useCoupon";
-import {
-  useNotification,
-  useNotificationActions,
-} from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
@@ -22,14 +18,12 @@ export interface ProductWithUI extends Product {
 const SOLD_OUT_TEXT = "SOLD OUT";
 
 const App = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const { cart, totalItemCount } = useCart();
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { coupons, addCoupon, deleteCoupon } = useCoupon();
-  const notifications = useNotification();
-  const { removeNotification } = useNotificationActions();
-
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const getProductPriceDisplay = (price: number, productId: string): string => {
@@ -42,30 +36,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {notifications.length > 0 && (
-        <div className="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
-          {notifications.map((notif) => (
-            <div
-              key={notif.id}
-              className={`p-4 rounded-md shadow-md text-white flex justify-between items-center ${
-                notif.type === "error"
-                  ? "bg-red-600"
-                  : notif.type === "warning"
-                  ? "bg-yellow-600"
-                  : "bg-green-600"
-              }`}
-            >
-              <span className="mr-2">{notif.message}</span>
-              <button
-                onClick={() => removeNotification(notif.id)}
-                className="text-white hover:text-gray-200"
-              >
-                <CloseXIcon className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
       <header className="bg-white shadow-sm sticky top-0 z-40 border-b">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
