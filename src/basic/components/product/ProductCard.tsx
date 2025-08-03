@@ -1,7 +1,8 @@
-import { ProductWithUI } from "../../App";
 import { CartItem } from "../../../types";
+import { ProductWithUI } from "../../App";
 import { getRemainingStock } from "../../models/cart";
 import { ImageIcon } from "../icons";
+import Badge from "../ui/Badge";
 
 interface ProductCardProps {
   product: ProductWithUI;
@@ -26,14 +27,14 @@ export const ProductCard = ({
           <ImageIcon className="w-24 h-24 text-gray-300" />
         </div>
         {product.isRecommended && (
-          <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+          <Badge color="red" className="absolute top-2 right-2">
             BEST
-          </span>
+          </Badge>
         )}
         {product.discounts.length > 0 && (
-          <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
+          <Badge color="orange" className="absolute top-2 left-2">
             ~{Math.max(...product.discounts.map((d) => d.rate)) * 100}%
-          </span>
+          </Badge>
         )}
       </div>
 
