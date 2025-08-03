@@ -3,10 +3,8 @@ import { Product } from "../types";
 import { CartIcon } from "./components/icons";
 import Button from "./components/ui/Button";
 import { useCart } from "./hooks/useCart.tsx";
-import { useProducts } from "./hooks/useProducts";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import { formatPrice, isProductSoldOut } from "./utils/formatters";
 import { useDebounce } from "./utils/hooks/useDebounce";
 
 export interface ProductWithUI extends Product {
@@ -14,22 +12,13 @@ export interface ProductWithUI extends Product {
   isRecommended?: boolean;
 }
 
-const SOLD_OUT_TEXT = "SOLD OUT";
+export const SOLD_OUT_TEXT = "SOLD OUT";
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { cart, totalItemCount } = useCart();
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  const getProductPriceDisplay = (price: number, productId: string): string => {
-    if (isProductSoldOut(productId, products, cart)) {
-      return SOLD_OUT_TEXT;
-    }
-
-    return isAdmin ? `${formatPrice(price)}원` : `₩${formatPrice(price)}`;
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,22 +64,8 @@ const App = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {isAdmin && (
-          <AdminPage
-            products={products}
-            addProduct={addProduct}
-            updateProduct={updateProduct}
-            deleteProduct={deleteProduct}
-            getProductPriceDisplay={getProductPriceDisplay}
-          />
-        )}
-        {!isAdmin && (
-          <CartPage
-            products={products}
-            debouncedSearchTerm={debouncedSearchTerm}
-            getProductPriceDisplay={getProductPriceDisplay}
-          />
-        )}
+        {isAdmin && <AdminPage />}
+        {!isAdmin && <CartPage debouncedSearchTerm={debouncedSearchTerm} />}
       </main>
     </div>
   );

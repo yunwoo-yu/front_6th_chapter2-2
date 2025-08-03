@@ -6,23 +6,10 @@ import { ProductTable } from "../components/admin/ProductTable";
 import { PlusIcon, TrashIcon } from "../components/icons";
 import Button from "../components/ui/Button";
 import { useCoupon, useCouponActions } from "../hooks/useCoupon";
+import { useProductActions } from "../hooks/useProducts";
 import { formatPrice } from "../utils/formatters";
 
-interface AdminPageProps {
-  products: ProductWithUI[];
-  addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
-  updateProduct: (productId: string, product: Partial<ProductWithUI>) => void;
-  deleteProduct: (productId: string) => void;
-  getProductPriceDisplay: (price: number, productId: string) => string;
-}
-
-const AdminPage = ({
-  products,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  getProductPriceDisplay,
-}: AdminPageProps) => {
+const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
@@ -44,6 +31,8 @@ const AdminPage = ({
   });
   const coupons = useCoupon();
   const { addCoupon, deleteCoupon } = useCouponActions();
+
+  const { addProduct, updateProduct } = useProductActions();
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,12 +152,7 @@ const AdminPage = ({
             </div>
           </div>
 
-          <ProductTable
-            products={products}
-            getProductPriceDisplay={getProductPriceDisplay}
-            startEditProduct={startEditProduct}
-            deleteProduct={deleteProduct}
-          />
+          <ProductTable startEditProduct={startEditProduct} />
           {showProductForm && (
             <ProductForm
               editingProduct={editingProduct}

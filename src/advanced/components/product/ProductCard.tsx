@@ -1,19 +1,18 @@
-import { ProductWithUI } from "../../App";
+import { ProductWithUI, SOLD_OUT_TEXT } from "../../App";
 import { useCart, useCartActions } from "../../hooks/useCart";
+import { useProducts } from "../../hooks/useProducts";
 import { getRemainingStock } from "../../models/cart";
+import { formatPrice, isProductSoldOut } from "../../utils/formatters";
 import { ImageIcon } from "../icons";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
 interface ProductCardProps {
   product: ProductWithUI;
-  getProductPriceDisplay: (price: number, productId: string) => string;
 }
 
-export const ProductCard = ({
-  product,
-  getProductPriceDisplay,
-}: ProductCardProps) => {
+export const ProductCard = ({ product }: ProductCardProps) => {
+  const products = useProducts();
   const { cart } = useCart();
   const { addToCart } = useCartActions();
   const remainingStock = getRemainingStock(product, cart);
@@ -49,7 +48,9 @@ export const ProductCard = ({
         {/* 가격 정보 */}
         <div className="mb-3">
           <p className="text-lg font-bold text-gray-900">
-            {getProductPriceDisplay(product.price, product.id)}
+            {isProductSoldOut(product.id, products, cart)
+              ? SOLD_OUT_TEXT
+              : `₩${formatPrice(product.price)}`}
           </p>
           {product.discounts.length > 0 && (
             <p className="text-xs text-gray-500">

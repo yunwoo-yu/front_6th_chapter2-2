@@ -1,20 +1,17 @@
-import { ProductWithUI } from "../../App";
+import { ProductWithUI, SOLD_OUT_TEXT } from "../../App";
+import { useCart } from "../../hooks/useCart";
+import { useProductActions, useProducts } from "../../hooks/useProducts";
+import { formatPrice, isProductSoldOut } from "../../utils/formatters";
 import Button from "../ui/Button";
 
 interface ProductTableProps {
-  products: ProductWithUI[];
-  getProductPriceDisplay: (price: number, productId: string) => string;
   startEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (productId: string) => void;
 }
 
-export const ProductTable = ({
-  products,
-  getProductPriceDisplay,
-  startEditProduct,
-  deleteProduct,
-}: ProductTableProps) => {
-  console.log(products);
+export const ProductTable = ({ startEditProduct }: ProductTableProps) => {
+  const products = useProducts();
+  const { cart } = useCart();
+  const { deleteProduct } = useProductActions();
 
   return (
     <div className="overflow-x-auto">
@@ -45,7 +42,9 @@ export const ProductTable = ({
                 {product.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {getProductPriceDisplay(product.price, product.id)}
+                {isProductSoldOut(product.id, products, cart)
+                  ? SOLD_OUT_TEXT
+                  : `${formatPrice(product.price)}원`}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <span

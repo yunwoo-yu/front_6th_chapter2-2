@@ -1,7 +1,21 @@
-import { useCallback, useEffect } from "react";
+import {
+  createContext,
+  memo,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { ProductWithUI } from "../../basic/App";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 import { useNotificationActions } from "./useNotification";
+
+interface ProductContextActionsTypes {
+  addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
+  updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
+  deleteProduct: (productId: string) => void;
+}
 
 const initialProducts: ProductWithUI[] = [
   {
@@ -37,13 +51,18 @@ const initialProducts: ProductWithUI[] = [
   },
 ];
 
-export const useProducts = () => {
-  // TODO: 구현
+const ProductContext = createContext<ProductWithUI[]>(initialProducts);
+const ProductContextActions = createContext<ProductContextActionsTypes>({
+  addProduct: () => {},
+  updateProduct: () => {},
+  deleteProduct: () => {},
+});
+
+export const ProductProvider = memo(({ children }: PropsWithChildren) => {
   const [products, setProducts] = useLocalStorage<ProductWithUI[]>(
     "products",
     initialProducts
   );
-
   const { addNotification } = useNotificationActions();
 
   const addProduct = useCallback(
@@ -82,10 +101,40 @@ export const useProducts = () => {
     localStorage.setItem("products", JSON.stringify(products));
   }, [products]);
 
-  return {
-    products,
-    addProduct,
-    updateProduct,
-    deleteProduct,
-  };
+  const actions = useMemo(
+    () => ({
+      addProduct,
+      updateProduct,
+      deleteProduct,
+    }),
+    [addProduct, updateProduct, deleteProduct]
+  );
+
+  return (
+    <ProductContext.Provider value={products}>
+      <ProductContextActions.Provider value={actions}>
+        {children}
+      </ProductContextActions.Provider>
+    </ProductContext.Provider>
+  );
+});
+
+export const useProducts = () => {
+  const context = useContext(ProductContext);
+
+  if (!context) {
+    throw new Error("useProducts must be used within a ProductProvider");
+  }
+
+  return context;
+};
+
+export const useProductActions = () => {
+  const context = useContext(ProductContextActions);
+
+  if (!context) {
+    throw new Error("useProductActions must be used within a ProductProvider");
+  }
+
+  return context;
 };

@@ -1,17 +1,12 @@
-import { ProductWithUI } from "../../App";
+import { useProducts } from "../../hooks/useProducts";
 import { ProductCard } from "./ProductCard";
 
 interface ProductListProps {
-  products: ProductWithUI[];
   debouncedSearchTerm: string;
-  getProductPriceDisplay: (price: number, productId: string) => string;
 }
 
-export const ProductList = ({
-  products,
-  debouncedSearchTerm,
-  getProductPriceDisplay,
-}: ProductListProps) => {
+export const ProductList = ({ debouncedSearchTerm }: ProductListProps) => {
+  const products = useProducts();
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
         (product) =>
@@ -41,11 +36,7 @@ export const ProductList = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              getProductPriceDisplay={getProductPriceDisplay}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
