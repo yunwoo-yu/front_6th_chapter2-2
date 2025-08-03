@@ -1,10 +1,9 @@
-import { useProducts } from "../../hooks/useProducts";
-import { useSearch } from "../../hooks/useSearch";
-import { ProductCard } from "./ProductCard";
+import { useProducts } from "../../../hooks/useProducts";
+import { useSearch } from "../../../hooks/useSearch";
+import { ProductCard } from "../../../components/product/ProductCard";
 
-export const ProductList = () => {
+const ProductSection = () => {
   const { debouncedSearchTerm } = useSearch();
-
   const products = useProducts();
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
@@ -42,3 +41,5 @@ export const ProductList = () => {
     </section>
   );
 };
+
+export default ProductSection;

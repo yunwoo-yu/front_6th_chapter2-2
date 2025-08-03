@@ -8,7 +8,7 @@ import { NotificationProvider } from "./hooks/useNotification.tsx";
 import { ProductProvider } from "./hooks/useProducts.tsx";
 import { SearchProvider } from "./hooks/useSearch.tsx";
 import AdminPage from "./pages/AdminPage";
-import CartPage from "./pages/CartPage";
+import CartPage from "./pages/cart/CartPage.tsx";
 
 export interface ProductWithUI extends Product {
   description?: string;
