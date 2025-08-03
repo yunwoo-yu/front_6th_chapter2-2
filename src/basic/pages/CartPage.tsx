@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { CartItem, Coupon } from "../../types";
 import { ProductWithUI } from "../App";
-import { CartTotal, getRemainingStock } from "../models/cart";
 import { BasketIcon, CloseXIcon, ImageIcon } from "../components/icons";
+import { CartTotal, getRemainingStock } from "../models/cart";
 import {
   calculateDiscountRate,
   formatPrice,
@@ -13,7 +12,7 @@ interface CartPageProps {
   products: ProductWithUI[];
   cart: CartItem[];
   selectedCoupon: Coupon | null;
-  searchTerm: string;
+  debouncedSearchTerm: string;
   coupons: Coupon[];
   setSelectedCoupon: (coupon: Coupon | null) => void;
   calculateTotal: (
@@ -33,7 +32,7 @@ const CartPage = ({
   products,
   cart,
   selectedCoupon,
-  searchTerm,
+  debouncedSearchTerm,
   coupons,
   setSelectedCoupon,
   calculateTotal,
@@ -45,8 +44,6 @@ const CartPage = ({
   applyCoupon,
   completeOrder,
 }: CartPageProps) => {
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
   const totals = calculateTotal(cart, selectedCoupon);
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
@@ -60,13 +57,6 @@ const CartPage = ({
               .includes(debouncedSearchTerm.toLowerCase()))
       )
     : products;
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

@@ -9,6 +9,7 @@ import { calculateItemTotal } from "./models/cart";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
 import { formatPrice, isProductSoldOut } from "./utils/formatters";
+import { useDebounce } from "./utils/hooks/useDebounce";
 
 export interface ProductWithUI extends Product {
   description?: string;
@@ -43,6 +44,7 @@ const App = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [totalItemCount, setTotalItemCount] = useState(0);
 
   const getProductPriceDisplay = (price: number, productId: string): string => {
@@ -167,7 +169,7 @@ const App = () => {
             products={products}
             cart={cart}
             selectedCoupon={selectedCoupon}
-            searchTerm={searchTerm}
+            debouncedSearchTerm={debouncedSearchTerm}
             coupons={coupons}
             setSelectedCoupon={setSelectedCoupon}
             calculateTotal={calculateTotal}
