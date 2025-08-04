@@ -15,18 +15,3 @@ export const isProductSoldOut = (
 
   return product ? getRemainingStock(product, cart) <= 0 : false;
 };
-
-export const toPercentage = (decimal: number): number => {
-  return decimal * 100;
-};
-
-export const toDecimal = (percentage: number): number => {
-  return percentage / 100;
-};
-
-export const calculateDiscountRate = (
-  original: number,
-  discounted: number
-): number => {
-  return Math.round((1 - discounted / original) * 100);
-};
