@@ -56,14 +56,6 @@ const App = () => {
     return isAdmin ? `${formatPrice(price)}원` : `₩${formatPrice(price)}`;
   };
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } else {
-      localStorage.removeItem("cart");
-    }
-  }, [cart]);
-
   const completeOrder = useCallback(() => {
     const orderNumber = `ORD-${Date.now()}`;
 
@@ -74,6 +66,19 @@ const App = () => {
 
     clearCart();
   }, [addNotification, clearCart]);
+
+  useEffect(() => {
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setTotalItemCount(count);
+  }, [cart]);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } else {
+      localStorage.removeItem("cart");
+    }
+  }, [cart]);
 
   return (
     <div className="min-h-screen bg-gray-50">
