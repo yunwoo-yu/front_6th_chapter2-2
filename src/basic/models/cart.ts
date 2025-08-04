@@ -1,5 +1,5 @@
-import { applyCoupon } from "../../refactoring(hint)/models/coupon";
 import { CartItem, Coupon, Product } from "../../types";
+import { applyCouponDiscount } from "./coupons";
 import { getMaxApplicableDiscount } from "./discount";
 
 export interface CartTotal {
@@ -28,7 +28,7 @@ export const calculateCartTotal = (
     return total + item.product.price * item.quantity;
   }, 0);
 
-  const totalAfterDiscount = applyCoupon(
+  const totalAfterDiscount = applyCouponDiscount(
     cart.reduce((total, item) => {
       return total + calculateItemTotal(item, cart);
     }, 0),
