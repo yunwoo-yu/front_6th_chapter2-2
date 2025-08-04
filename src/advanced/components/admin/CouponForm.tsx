@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNotificationActions } from "../../hooks/useNotification";
 import { useCouponActions } from "../../hooks/useCoupon";
+import { Input } from "../ui/Input";
 
 interface CouponFormData {
   name: string;
@@ -87,34 +88,28 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
       <form onSubmit={handleCouponSubmit} className="space-y-4">
         <h3 className="text-md font-medium text-gray-900">새 쿠폰 생성</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              쿠폰명
-            </label>
-            <input
+          <Input>
+            <Input.Label>쿠폰명</Input.Label>
+            <Input.Field
               type="text"
               name="name"
               value={couponForm.name}
               onChange={handleChangeCouponForm}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border text-sm"
               placeholder="신규 가입 쿠폰"
               required
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              쿠폰 코드
-            </label>
-            <input
+          </Input>
+          <Input>
+            <Input.Label>쿠폰 코드</Input.Label>
+            <Input.Field
               type="text"
               name="code"
               value={couponForm.code}
               onChange={handleChangeCouponForm}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border text-sm font-mono"
               placeholder="WELCOME2024"
               required
             />
-          </div>
+          </Input>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               할인 타입
@@ -129,11 +124,11 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
               <option value="percentage">정률 할인</option>
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <Input>
+            <Input.Label>
               {couponForm.discountType === "amount" ? "할인 금액" : "할인율(%)"}
-            </label>
-            <input
+            </Input.Label>
+            <Input.Field
               type="text"
               name="discountValue"
               value={
@@ -141,11 +136,10 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
               }
               onChange={handleChangeCouponForm}
               onBlur={handleBlurCouponForm}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border text-sm"
               placeholder={couponForm.discountType === "amount" ? "5000" : "10"}
               required
             />
-          </div>
+          </Input>
         </div>
         <div className="flex justify-end gap-3">
           <button
