@@ -14,6 +14,7 @@ import { ProductWithUI } from "../App";
 import {
   addItemToCart,
   calculateCartTotal,
+  getCartItemByProductId,
   getRemainingStock,
   removeItemFromCart,
   updateCartItemQuantity,
@@ -60,14 +61,13 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
   const addToCart = useCallback(
     (product: ProductWithUI) => {
       const remainingStock = getRemainingStock(product, cart);
+      const existingItem = getCartItemByProductId(cart, product.id);
+      const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
 
       if (remainingStock <= 0) {
         addNotification("재고가 부족합니다!", "error");
         return;
       }
-
-      const existingItem = cart.find((item) => item.product.id === product.id);
-      const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
 
       if (newQuantity > product.stock) {
         addNotification(`재고는 ${product.stock}개까지만 있습니다.`, "error");
@@ -77,7 +77,7 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
       setCart((prevCart) => addItemToCart(prevCart, product));
       addNotification("장바구니에 담았습니다", "success");
     },
-    [cart, addNotification, getRemainingStock]
+    [cart]
   );
 
   const removeFromCart = useCallback((productId: string) => {
@@ -106,7 +106,7 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
         updateCartItemQuantity(prevCart, productId, newQuantity)
       );
     },
-    [cart, removeFromCart, addNotification]
+    [cart]
   );
 
   const applyCoupon = useCallback(
@@ -124,7 +124,7 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
       setSelectedCoupon(coupon);
       addNotification("쿠폰이 적용되었습니다.", "success");
     },
-    [cart, addNotification]
+    [cart]
   );
 
   const unapplyCoupon = useCallback(() => {
