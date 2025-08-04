@@ -26,12 +26,26 @@ const Label = memo(({ children, className, ...props }: LabelProps) => {
   );
 });
 
-interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {}
+interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  fullWidth?: boolean;
+  sizes?: "sm" | "md";
+}
 
-const Field = ({ className, ...props }: FieldProps) => {
+const Field = ({
+  className,
+  fullWidth = true,
+  sizes = "md",
+  ...props
+}: FieldProps) => {
+  const sizeClass = {
+    sm: "px-2 py-1 rounded border",
+    md: "px-3 py-2 rounded-md shadow-sm border-gray-300",
+  };
+
   return (
     <input
-      className={`w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border ${className}`}
+      className={`focus:ring-indigo-500 focus:border-indigo-500 border
+        ${fullWidth ? "w-full" : ""} ${sizeClass[sizes]} ${className}`}
       {...props}
     />
   );

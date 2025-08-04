@@ -1,5 +1,6 @@
 import { useNotificationActions } from "../../hooks/useNotification";
 import { CloseXIcon } from "../icons";
+import { Input } from "../ui/Input";
 
 interface ProductFormData {
   name: string;
@@ -33,12 +34,11 @@ export const ProductForm = ({
           {editingProduct === "new" ? "새 상품 추가" : "상품 수정"}
         </h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              상품명
-            </label>
-            <input
+          <Input>
+            <Input.Label>상품명</Input.Label>
+            <Input.Field
               type="text"
+              required
               value={productForm.name}
               onChange={(e) =>
                 setProductForm({
@@ -46,15 +46,11 @@ export const ProductForm = ({
                   name: e.target.value,
                 })
               }
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
-              required
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              설명
-            </label>
-            <input
+          </Input>
+          <Input>
+            <Input.Label>설명</Input.Label>
+            <Input.Field
               type="text"
               value={productForm.description}
               onChange={(e) =>
@@ -63,15 +59,14 @@ export const ProductForm = ({
                   description: e.target.value,
                 })
               }
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              가격
-            </label>
-            <input
+          </Input>
+          <Input>
+            <Input.Label>가격</Input.Label>
+            <Input.Field
               type="text"
+              required
+              placeholder="숫자만 입력"
               value={productForm.price === 0 ? "" : productForm.price}
               onChange={(e) => {
                 const value = e.target.value;
@@ -91,17 +86,14 @@ export const ProductForm = ({
                   setProductForm({ ...productForm, price: 0 });
                 }
               }}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
-              placeholder="숫자만 입력"
-              required
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              재고
-            </label>
-            <input
+          </Input>
+          <Input>
+            <Input.Label>재고</Input.Label>
+            <Input.Field
               type="text"
+              required
+              placeholder="숫자만 입력"
               value={productForm.stock === 0 ? "" : productForm.stock}
               onChange={(e) => {
                 const value = e.target.value;
@@ -127,13 +119,9 @@ export const ProductForm = ({
                   setProductForm({ ...productForm, stock: 9999 });
                 }
               }}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
-              placeholder="숫자만 입력"
-              required
             />
-          </div>
+          </Input>
         </div>
-
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             할인 정책
@@ -144,9 +132,11 @@ export const ProductForm = ({
                 key={index}
                 className="flex items-center gap-2 bg-gray-50 p-2 rounded"
               >
-                <input
+                <Input.Field
                   type="number"
                   value={discount.quantity}
+                  fullWidth={false}
+                  sizes="sm"
                   onChange={(e) => {
                     const newDiscounts = [...productForm.discounts];
                     newDiscounts[index].quantity =
@@ -156,14 +146,16 @@ export const ProductForm = ({
                       discounts: newDiscounts,
                     });
                   }}
-                  className="w-20 px-2 py-1 border rounded"
+                  className="w-20 px-2 py-1"
                   min="1"
                   placeholder="수량"
                 />
                 <span className="text-sm">개 이상 구매 시</span>
-                <input
+                <Input.Field
                   type="number"
                   value={discount.rate * 100}
+                  fullWidth={false}
+                  sizes="sm"
                   onChange={(e) => {
                     const newDiscounts = [...productForm.discounts];
                     newDiscounts[index].rate =
@@ -173,7 +165,7 @@ export const ProductForm = ({
                       discounts: newDiscounts,
                     });
                   }}
-                  className="w-16 px-2 py-1 border rounded"
+                  className="w-16 px-2 py-1 "
                   min="0"
                   max="100"
                   placeholder="%"
