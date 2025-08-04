@@ -8,6 +8,8 @@ interface ProductTableProps {
   handleEditProduct: (product: ProductWithUI) => void;
 }
 
+const PRODUCT_TABLE_HEADERS = ["상품명", "가격", "재고", "설명", "작업"];
+
 export const ProductTable = ({ handleEditProduct }: ProductTableProps) => {
   const products = useProducts();
   const { cart } = useCart();
@@ -18,21 +20,18 @@ export const ProductTable = ({ handleEditProduct }: ProductTableProps) => {
       <table className="w-full">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              상품명
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              가격
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              재고
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              설명
-            </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              작업
-            </th>
+            {PRODUCT_TABLE_HEADERS.map((header, index) => (
+              <th
+                key={header}
+                className={`px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                  index === PRODUCT_TABLE_HEADERS.length - 1
+                    ? "text-right"
+                    : "text-left"
+                }`}
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
