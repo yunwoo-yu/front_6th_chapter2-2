@@ -1,6 +1,6 @@
 import { Coupon } from "../../types";
 
-export const applyCoupon = (
+export const applyCouponDiscount = (
   totalAfterDiscount: number,
   coupon: Coupon | null
 ): number => {
