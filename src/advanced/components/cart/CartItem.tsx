@@ -1,6 +1,7 @@
 import { CartItem as CartItemType } from "../../../types";
 import { useCart, useCartActions } from "../../hooks/useCart";
 import { calculateItemTotal } from "../../models/cart";
+import { multiply } from "../../utils/calculators";
 import { formatPrice } from "../../utils/formatters";
 import { CloseXIcon } from "../icons";
 
@@ -13,7 +14,7 @@ export const CartItem = ({ item }: CartItemProps) => {
   const { removeFromCart, updateQuantity } = useCartActions();
 
   const itemTotal = calculateItemTotal(item, cart);
-  const originalPrice = item.product.price * item.quantity;
+  const originalPrice = multiply(item.product.price, item.quantity);
   const hasDiscount = itemTotal < originalPrice;
   const discountRate = hasDiscount
     ? Math.round((1 - itemTotal / originalPrice) * 100)
