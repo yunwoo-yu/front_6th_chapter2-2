@@ -1,6 +1,6 @@
 import { useProducts } from "../../../hooks/useProducts";
 import { useSearch } from "../../../hooks/useSearch";
-import { ProductCard } from "../../../components/product/ProductCard";
+import { ProductCard } from "../../../components/cart/ProductCard";
 
 const ProductSection = () => {
   const { debouncedSearchTerm } = useSearch();
