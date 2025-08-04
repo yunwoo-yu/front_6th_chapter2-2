@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNotificationActions } from "../../hooks/useNotification";
 import { useCouponActions } from "../../hooks/useCoupon";
 import { Input } from "../ui/Input";
+import { Label } from "../ui/Label";
+import { Select } from "../ui/Select";
 
 interface CouponFormData {
   name: string;
@@ -110,20 +112,17 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
               required
             />
           </Input>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              할인 타입
-            </label>
-            <select
+          <Input>
+            <Label>할인 타입</Label>
+            <Select
               value={couponForm.discountType}
               name="discountType"
               onChange={handleChangeCouponForm}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border text-sm"
             >
-              <option value="amount">정액 할인</option>
-              <option value="percentage">정률 할인</option>
-            </select>
-          </div>
+              <Select.Option value="amount">정액 할인</Select.Option>
+              <Select.Option value="percentage">정률 할인</Select.Option>
+            </Select>
+          </Input>
           <Input>
             <Input.Label>
               {couponForm.discountType === "amount" ? "할인 금액" : "할인율(%)"}
