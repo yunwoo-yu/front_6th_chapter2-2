@@ -1,5 +1,5 @@
-import { applyCoupon } from "../../refactoring(hint)/models/coupon";
 import { CartItem, Coupon, Product } from "../../types";
+import { applyCoupon } from "./coupons";
 import { getMaxApplicableDiscount } from "./discount";
 
 export interface CartTotal {
