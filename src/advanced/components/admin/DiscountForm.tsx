@@ -1,4 +1,5 @@
 import { ProductFormData } from "../../pages/admin/components/ProductManagementSection";
+import { multiply } from "../../utils/calculators";
 import { CloseXIcon } from "../icons";
 import { Input } from "../ui/Input";
 
@@ -43,7 +44,7 @@ const DiscountForm = ({
             <span className="text-sm">개 이상 구매 시</span>
             <Input.Field
               type="number"
-              value={discount.rate * 100}
+              value={multiply(discount.rate, 100)}
               fullWidth={false}
               sizes="sm"
               name="rate"

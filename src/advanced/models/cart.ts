@@ -22,8 +22,8 @@ export const calculateItemTotal = (
   const { price } = item.product;
   const { quantity } = item;
   const baseAmount = multiply(price, quantity);
-  const discountAmount = getMaxApplicableDiscount(item, cart);
-  const discountedAmount = multiply(baseAmount, 1 - discountAmount);
+  const maxDiscountRate = getMaxApplicableDiscount(item, cart);
+  const discountedAmount = multiply(baseAmount, 1 - maxDiscountRate);
 
   return Math.round(discountedAmount);
 };

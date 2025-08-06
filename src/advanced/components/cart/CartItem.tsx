@@ -1,7 +1,7 @@
 import { CartItem as CartItemType } from "../../../types";
 import { useCart, useCartActions } from "../../hooks/useCart";
 import { calculateItemTotal } from "../../models/cart";
-import { multiply } from "../../utils/calculators";
+import { calculatePercentageChange, multiply } from "../../utils/calculators";
 import { formatPrice } from "../../utils/formatters";
 import { CloseXIcon } from "../icons";
 
@@ -13,11 +13,11 @@ export const CartItem = ({ item }: CartItemProps) => {
   const { cart } = useCart();
   const { removeFromCart, updateQuantity } = useCartActions();
 
-  const itemTotal = calculateItemTotal(item, cart);
   const originalPrice = multiply(item.product.price, item.quantity);
-  const hasDiscount = itemTotal < originalPrice;
+  const cartItemTotalPrice = calculateItemTotal(item, cart);
+  const hasDiscount = cartItemTotalPrice < originalPrice;
   const discountRate = hasDiscount
-    ? Math.round((1 - itemTotal / originalPrice) * 100)
+    ? calculatePercentageChange(originalPrice, cartItemTotalPrice)
     : 0;
 
   return (
@@ -60,7 +60,7 @@ export const CartItem = ({ item }: CartItemProps) => {
             </span>
           )}
           <p className="text-sm font-medium text-gray-900">
-            {formatPrice(Math.round(itemTotal))}원
+            {formatPrice(Math.round(cartItemTotalPrice))}원
           </p>
         </div>
       </div>

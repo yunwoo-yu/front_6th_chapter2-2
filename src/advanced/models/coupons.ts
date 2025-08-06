@@ -1,4 +1,5 @@
 import { Coupon } from "../../types";
+import { applyPercentage } from "../utils/calculators";
 
 export const applyCouponDiscount = (
   totalAfterDiscount: number,
@@ -10,6 +11,6 @@ export const applyCouponDiscount = (
     case "amount":
       return Math.max(0, totalAfterDiscount - coupon.discountValue);
     case "percentage":
-      return Math.round(totalAfterDiscount * (1 - coupon.discountValue / 100));
+      return applyPercentage(totalAfterDiscount, coupon.discountValue);
   }
 };
