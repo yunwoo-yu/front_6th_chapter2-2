@@ -6,7 +6,7 @@ import { useCoupon } from "../../../hooks/useCoupon";
 
 const CouponManagementSection = () => {
   const [showCouponForm, setShowCouponForm] = useState(false);
-  const coupons = useCoupon();
+  const { coupons } = useCoupon();
 
   return (
     <section className="bg-white rounded-lg border border-gray-200">

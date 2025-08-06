@@ -3,9 +3,11 @@ import { useCart, useCartActions } from "../../../hooks/useCart";
 import { calculateCartTotal } from "../../../models/cart";
 import Button from "../../../components/ui/Button";
 import { useNotificationActions } from "../../../hooks/useNotification";
+import { useCoupon } from "../../../hooks/useCoupon";
 
 const PaymentSection = () => {
-  const { cart, selectedCoupon } = useCart();
+  const { cart } = useCart();
+  const { selectedCoupon } = useCoupon();
   const { clearCart } = useCartActions();
   const { addNotification } = useNotificationActions();
   const totalPaymentAmount = calculateCartTotal(cart, selectedCoupon);

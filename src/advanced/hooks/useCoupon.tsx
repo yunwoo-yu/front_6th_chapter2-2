@@ -6,17 +6,24 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { Coupon } from "../../types";
+import { calculateCartTotal } from "../models/cart";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
-import { useCart, useCartActions } from "./useCart";
+import { useCart } from "./useCart";
 import { useNotificationActions } from "./useNotification";
 
-type CouponContextTypes = Coupon[];
+type CouponContextTypes = {
+  coupons: Coupon[];
+  selectedCoupon: Coupon | null;
+};
 
 interface CouponContextActionsTypes {
   addCoupon: (newCoupon: Coupon) => void;
   deleteCoupon: (couponCode: string) => void;
+  applyCoupon: (coupon: Coupon) => void;
+  unapplyCoupon: () => void;
 }
 
 const initialCoupons: Coupon[] = [
@@ -34,21 +41,27 @@ const initialCoupons: Coupon[] = [
   },
 ];
 
-const CouponContext = createContext<CouponContextTypes>(initialCoupons);
+const CouponContext = createContext<CouponContextTypes>({
+  coupons: initialCoupons,
+  selectedCoupon: null,
+});
 
 const CouponContextActions = createContext<CouponContextActionsTypes>({
   addCoupon: () => {},
   deleteCoupon: () => {},
+  applyCoupon: () => {},
+  unapplyCoupon: () => {},
 });
+const MIN_PURCHASE_FOR_PERCENTAGE = 10000;
 
 export const CouponProvider = memo(({ children }: PropsWithChildren) => {
   const [coupons, setCoupons] = useLocalStorage<Coupon[]>(
     "coupons",
     initialCoupons
   );
+  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const { addNotification } = useNotificationActions();
-  const { selectedCoupon } = useCart();
-  const { unapplyCoupon } = useCartActions();
+  const { cart } = useCart();
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
@@ -80,20 +93,55 @@ export const CouponProvider = memo(({ children }: PropsWithChildren) => {
     [selectedCoupon, addNotification]
   );
 
+  const applyCoupon = useCallback(
+    (coupon: Coupon) => {
+      const currentTotal = calculateCartTotal(cart, coupon).totalAfterDiscount;
+
+      if (
+        currentTotal < MIN_PURCHASE_FOR_PERCENTAGE &&
+        coupon.discountType === "percentage"
+      ) {
+        addNotification(
+          "percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.",
+          "error"
+        );
+        return;
+      }
+
+      setSelectedCoupon(coupon);
+      addNotification("쿠폰이 적용되었습니다.", "success");
+    },
+    [cart]
+  );
+
+  const unapplyCoupon = useCallback(() => {
+    setSelectedCoupon(null);
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("coupons", JSON.stringify(coupons));
   }, [coupons]);
+
+  const values = useMemo(
+    () => ({
+      coupons,
+      selectedCoupon,
+    }),
+    [coupons, selectedCoupon]
+  );
 
   const actions = useMemo(
     () => ({
       addCoupon,
       deleteCoupon,
+      applyCoupon,
+      unapplyCoupon,
     }),
-    [addCoupon, deleteCoupon]
+    [addCoupon, deleteCoupon, applyCoupon, unapplyCoupon]
   );
 
   return (
-    <CouponContext.Provider value={coupons}>
+    <CouponContext.Provider value={values}>
       <CouponContextActions.Provider value={actions}>
         {children}
       </CouponContextActions.Provider>

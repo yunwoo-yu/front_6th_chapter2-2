@@ -1,11 +1,11 @@
 import { Select } from "../../../components/ui/Select";
-import { useCart, useCartActions } from "../../../hooks/useCart";
-import { useCoupon } from "../../../hooks/useCoupon";
+import { useCart } from "../../../hooks/useCart";
+import { useCoupon, useCouponActions } from "../../../hooks/useCoupon";
 
 const CouponSection = () => {
-  const coupons = useCoupon();
-  const { cart, selectedCoupon } = useCart();
-  const { applyCoupon, unapplyCoupon } = useCartActions();
+  const { coupons, selectedCoupon } = useCoupon();
+  const { cart } = useCart();
+  const { applyCoupon, unapplyCoupon } = useCouponActions();
 
   const handleChangeCoupon = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const coupon = coupons.find((c) => c.code === e.target.value);

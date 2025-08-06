@@ -8,23 +8,22 @@ import {
   useMemo,
   useState,
 } from "react";
-import { CartItem, Coupon } from "../../types";
+import { CartItem } from "../../types";
 
 import { ProductWithUI } from "../App";
 import {
   addItemToCart,
-  calculateCartTotal,
   getCartItemByProductId,
   getRemainingStock,
   removeItemFromCart,
   updateCartItemQuantity,
 } from "../models/cart";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
+import { useCouponActions } from "./useCoupon";
 import { useNotificationActions } from "./useNotification";
 
 interface CartContextTypes {
   cart: CartItem[];
-  selectedCoupon: Coupon | null;
   totalItemCount: number;
 }
 
@@ -32,14 +31,11 @@ interface CartContextActionsTypes {
   addToCart: (product: ProductWithUI) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, newQuantity: number) => void;
-  applyCoupon: (coupon: Coupon) => void;
-  unapplyCoupon: () => void;
   clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextTypes>({
   cart: [],
-  selectedCoupon: null,
   totalItemCount: 0,
 });
 
@@ -47,18 +43,14 @@ const CartContextActions = createContext<CartContextActionsTypes>({
   addToCart: () => {},
   removeFromCart: () => {},
   updateQuantity: () => {},
-  applyCoupon: () => {},
-  unapplyCoupon: () => {},
   clearCart: () => {},
 });
 
-const MIN_PURCHASE_FOR_PERCENTAGE = 10000;
-
 export const CartProvider = memo(({ children }: PropsWithChildren) => {
   const [cart, setCart] = useLocalStorage<CartItem[]>("cart", []); // 장바구니 상태
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [totalItemCount, setTotalItemCount] = useState(0);
   const { addNotification } = useNotificationActions();
+  const { unapplyCoupon } = useCouponActions();
 
   const addToCart = useCallback(
     (product: ProductWithUI) => {
@@ -111,34 +103,9 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
     [cart]
   );
 
-  const applyCoupon = useCallback(
-    (coupon: Coupon) => {
-      const currentTotal = calculateCartTotal(cart, coupon).totalAfterDiscount;
-
-      if (
-        currentTotal < MIN_PURCHASE_FOR_PERCENTAGE &&
-        coupon.discountType === "percentage"
-      ) {
-        addNotification(
-          "percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.",
-          "error"
-        );
-        return;
-      }
-
-      setSelectedCoupon(coupon);
-      addNotification("쿠폰이 적용되었습니다.", "success");
-    },
-    [cart]
-  );
-
-  const unapplyCoupon = useCallback(() => {
-    setSelectedCoupon(null);
-  }, []);
-
   const clearCart = useCallback(() => {
     setCart([]);
-    setSelectedCoupon(null);
+    unapplyCoupon();
   }, []);
 
   useEffect(() => {
@@ -158,28 +125,18 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
   const value = useMemo(() => {
     return {
       cart,
-      selectedCoupon,
       totalItemCount,
     };
-  }, [cart, selectedCoupon, totalItemCount]);
+  }, [cart, totalItemCount]);
 
   const actions = useMemo(() => {
     return {
       addToCart,
       removeFromCart,
       updateQuantity,
-      applyCoupon,
-      unapplyCoupon,
       clearCart,
     };
-  }, [
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
-    unapplyCoupon,
-    clearCart,
-  ]);
+  }, [addToCart, removeFromCart, updateQuantity, clearCart]);
 
   return (
     <CartContext.Provider value={value}>
