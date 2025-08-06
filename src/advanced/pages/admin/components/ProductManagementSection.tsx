@@ -6,6 +6,7 @@ import { ProductForm } from "../../../components/admin/ProductForm";
 import { useProductActions } from "../../../hooks/useProducts";
 import { useNotificationActions } from "../../../hooks/useNotification";
 import DiscountForm from "../../../components/admin/DiscountForm";
+import { isNumericInput } from "../../../utils/validators";
 
 export interface ProductFormData {
   name: string;
@@ -56,9 +57,7 @@ const ProductManagementSection = () => {
     const { name, value } = e.target;
 
     if (name === "price" || name === "stock") {
-      const isNumeric = value === "" || /^\d+$/.test(value);
-
-      if (isNumeric) {
+      if (isNumericInput(value)) {
         setProductForm({
           ...productForm,
           [name]: value === "" ? 0 : parseInt(value),

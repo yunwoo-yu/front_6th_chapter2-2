@@ -4,6 +4,7 @@ import { useCouponActions } from "../../hooks/useCoupon";
 import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import { Select } from "../ui/Select";
+import { isNumericInput } from "../../utils/validators";
 
 interface CouponFormData {
   name: string;
@@ -15,6 +16,9 @@ interface CouponFormData {
 interface CouponFormProps {
   handleCancelCoupon: () => void;
 }
+
+const MAX_DISCOUNT_RATE = 100;
+const MAX_DISCOUNT_VALUE = 100000;
 
 export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
   const [couponForm, setCouponForm] = useState<CouponFormData>({
@@ -32,7 +36,7 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
     const { name, value } = e.target;
 
     if (name === "discountValue") {
-      if (value === "" || /^\d+$/.test(value)) {
+      if (isNumericInput(value)) {
         setCouponForm({
           ...couponForm,
           [name]: value === "" ? 0 : parseInt(value),
@@ -50,22 +54,22 @@ export const CouponForm = ({ handleCancelCoupon }: CouponFormProps) => {
     const value = parseInt(e.target.value) || 0;
 
     if (couponForm.discountType === "percentage") {
-      if (value > 100) {
+      if (value > MAX_DISCOUNT_RATE) {
         addNotification("할인율은 100%를 초과할 수 없습니다", "error");
         setCouponForm({
           ...couponForm,
-          discountValue: 100,
+          discountValue: MAX_DISCOUNT_RATE,
         });
         return;
       }
     }
 
     if (couponForm.discountType === "amount") {
-      if (value > 100000) {
+      if (value > MAX_DISCOUNT_VALUE) {
         addNotification("할인 금액은 100,000원을 초과할 수 없습니다", "error");
         setCouponForm({
           ...couponForm,
-          discountValue: 100000,
+          discountValue: MAX_DISCOUNT_VALUE,
         });
         return;
       }

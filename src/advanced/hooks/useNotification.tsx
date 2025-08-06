@@ -17,6 +17,8 @@ export interface Notification {
   type: NotificationType;
 }
 
+const NOTIFICATION_TIMEOUT = 3000;
+
 export interface NotificationContextActionsTypes {
   addNotification: (message: string, type: NotificationType) => void;
   removeNotification: (id: string) => void;
@@ -35,11 +37,11 @@ export const NotificationProvider = memo(({ children }: PropsWithChildren) => {
   const addNotification = useCallback(
     (message: string, type: NotificationType = "success") => {
       const id = Date.now().toString();
-      setNotifications((prev) => [...prev, { id, message, type }]);
 
+      setNotifications((prev) => [...prev, { id, message, type }]);
       setTimeout(() => {
         setNotifications((prev) => prev.filter((n) => n.id !== id));
-      }, 3000);
+      }, NOTIFICATION_TIMEOUT);
     },
     []
   );

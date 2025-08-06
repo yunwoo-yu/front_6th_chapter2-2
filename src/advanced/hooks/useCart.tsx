@@ -52,6 +52,8 @@ const CartContextActions = createContext<CartContextActionsTypes>({
   clearCart: () => {},
 });
 
+const MIN_PURCHASE_FOR_PERCENTAGE = 10000;
+
 export const CartProvider = memo(({ children }: PropsWithChildren) => {
   const [cart, setCart] = useLocalStorage<CartItem[]>("cart", []); // 장바구니 상태
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
@@ -113,7 +115,10 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
     (coupon: Coupon) => {
       const currentTotal = calculateCartTotal(cart, coupon).totalAfterDiscount;
 
-      if (currentTotal < 10000 && coupon.discountType === "percentage") {
+      if (
+        currentTotal < MIN_PURCHASE_FOR_PERCENTAGE &&
+        coupon.discountType === "percentage"
+      ) {
         addNotification(
           "percentage 쿠폰은 10,000원 이상 구매 시 사용 가능합니다.",
           "error"
