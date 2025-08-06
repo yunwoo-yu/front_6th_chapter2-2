@@ -4,7 +4,6 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
 } from "react";
 import { ProductWithUI } from "../../basic/App";
@@ -96,10 +95,6 @@ export const ProductProvider = memo(({ children }: PropsWithChildren) => {
     },
     [addNotification]
   );
-
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
 
   const actions = useMemo(
     () => ({

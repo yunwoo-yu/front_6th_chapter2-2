@@ -4,7 +4,6 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -117,10 +116,6 @@ export const CouponProvider = memo(({ children }: PropsWithChildren) => {
   const unapplyCoupon = useCallback(() => {
     setSelectedCoupon(null);
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons));
-  }, [coupons]);
 
   const values = useMemo(
     () => ({

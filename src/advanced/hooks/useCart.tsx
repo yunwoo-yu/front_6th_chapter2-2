@@ -114,14 +114,6 @@ export const CartProvider = memo(({ children }: PropsWithChildren) => {
     setTotalItemCount(count);
   }, [cart]);
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } else {
-      localStorage.removeItem("cart");
-    }
-  }, [cart]);
-
   const value = useMemo(() => {
     return {
       cart,
