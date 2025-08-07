@@ -1,7 +1,7 @@
 // 곱셈 계산
 export const multiply = (a: number, b: number): number => a * b;
 
-// 할인 요금 계산
+// 할인율 계산
 export const calculatePercentageChange = (
   originalAmount: number,
   discountedAmount: number
